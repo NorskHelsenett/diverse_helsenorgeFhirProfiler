@@ -1,10 +1,12 @@
 # FHIR IG Project Setup Guide
 
-This guide describes how to create and work with the same FHIR IG project scaffold used in this repository.
+This guide describes how to create and work with this FHIR IG project scaffold.
 
 ## Goal
 
 Use FSH as the source of truth, generate FHIR JSON with SUSHI, validate generated resources with Firely Terminal, review changes in GitHub Pull Requests, and let Simplifier import only generated JSON from the reviewed `main` branch.
+
+Local IG website generation is deferred for now. The normal build flow generates JSON with SUSHI and validates it with Firely Terminal.
 
 ## Prerequisites
 
@@ -13,7 +15,6 @@ Install:
 - VS Code
 - Git
 - Node.js 20 or newer
-- Java 17 or 21 LTS for IG Publisher
 - Firely Terminal
 
 Install project dependencies:
@@ -28,27 +29,27 @@ Use this structure:
 
 ```text
 .
-├── input/
-│   ├── fsh/
-│   │   ├── codesystems/
-│   │   ├── extensions/
-│   │   ├── instances/
-│   │   ├── invariants/
-│   │   ├── mappings/
-│   │   ├── profiles/
-│   │   ├── valuesets/
-│   │   └── aliases.fsh
-│   └── pagecontent/
-├── fsh-generated/
-│   └── resources/
-├── scripts/
-├── .github/
-│   └── workflows/
-├── sushi-config.yaml
-├── ig.ini
-├── package.json
-├── package-list.json
-└── README.md
+|-- input/
+|   |-- fsh/
+|   |   |-- codesystems/
+|   |   |-- extensions/
+|   |   |-- instances/
+|   |   |-- invariants/
+|   |   |-- mappings/
+|   |   |-- profiles/
+|   |   |-- valuesets/
+|   |   `-- aliases.fsh
+|   `-- pagecontent/
+|-- fsh-generated/
+|   `-- resources/
+|-- scripts/
+|-- .github/
+|   `-- workflows/
+|-- sushi-config.yaml
+|-- ig.ini
+|-- package.json
+|-- package-list.json
+`-- README.md
 ```
 
 ## Source And Generated Files
@@ -123,7 +124,6 @@ README.md
 scripts/build-sushi.ps1
 scripts/watch-sushi.ps1
 scripts/validate-firely.ps1
-scripts/build-ig.ps1
 scripts/ci.ps1
 .github/workflows/sushi-generation.yml
 .github/workflows/firely-validation.yml
@@ -155,6 +155,12 @@ dependencies:
   hl7.terminology.r4: 7.1.0
 ```
 
+Do not add `hl7.fhir.r4.core` as an explicit dependency. It is already implied by:
+
+```yaml
+fhirVersion: 4.0.1
+```
+
 Put Node tooling dependencies in `package.json`:
 
 ```json
@@ -176,12 +182,6 @@ Generate JSON resources:
 Watch FSH files and regenerate automatically:
 
 ```powershell
-.\scripts\watch-sushi.ps1
-```
-
-or:
-
-```powershell
 npm run watch
 ```
 
@@ -195,12 +195,6 @@ Run local CI checks:
 
 ```powershell
 .\scripts\ci.ps1
-```
-
-Generate the IG website:
-
-```powershell
-.\scripts\build-ig.ps1
 ```
 
 ## Daily Development Flow
@@ -222,46 +216,127 @@ npm run watch
 
 6. Commit both source and generated JSON.
 
-## Git Branch Flow
+## Initial GitHub Push
 
-Initialize Git:
+Initialize Git if needed:
 
 ```powershell
 git init
 ```
 
-Create a feature branch:
+Check whether a remote already exists:
 
 ```powershell
-git checkout -b feature/fhir-ig-setup
+git remote -v
+```
+
+If no remote is configured, add the GitHub repository URL:
+
+```powershell
+git remote add origin https://github.com/<owner>/<repo-name>.git
 ```
 
 Stage and commit:
 
 ```powershell
 git add .
-git commit -m "Add FHIR IG project structure"
+git commit -m "Initial FHIR IG scaffold"
 ```
 
-Add GitHub remote:
+For the first push, either push directly to `main`:
 
 ```powershell
-git remote add origin <your-github-repo-url>
+git branch -M main
+git push -u origin main
 ```
 
-Push the branch:
+or create a feature branch for Pull Request review:
 
 ```powershell
-git push -u origin feature/fhir-ig-setup
+git checkout -b feature/initial-fhir-ig-scaffold
+git push -u origin feature/initial-fhir-ig-scaffold
 ```
 
 Open a Pull Request:
 
 ```text
-feature/fhir-ig-setup -> main
+feature/initial-fhir-ig-scaffold -> main
 ```
 
-After review and successful validation, merge to `main`.
+## Later Change Flow
+
+Create a new branch from `main`:
+
+```powershell
+git checkout main
+git pull
+git checkout -b feature/my-change
+```
+
+After editing, building, and validating:
+
+```powershell
+git add .
+git commit -m "Describe the change"
+git push -u origin feature/my-change
+```
+
+Open a Pull Request:
+
+```text
+feature/my-change -> main
+```
+
+After review and successful validation, merge the Pull Request to `main`.
+
+## Branch Push Troubleshooting
+
+If this command fails:
+
+```powershell
+git push -u origin feature2.4.4beta
+```
+
+with:
+
+```text
+error: src refspec feature2.4.4beta does not match any
+```
+
+then the branch name you typed does not exist locally, or you have not committed anything yet.
+
+Check the current branch:
+
+```powershell
+git branch --show-current
+```
+
+List local branches:
+
+```powershell
+git branch
+```
+
+Push the current branch without retyping its name:
+
+```powershell
+git push -u origin HEAD
+```
+
+Or create the intended branch first:
+
+```powershell
+git checkout -b feature/2.4.4-beta
+git push -u origin feature/2.4.4-beta
+```
+
+Prefer branch names with slashes and hyphens:
+
+```text
+feature/2.4.4-beta
+feature/update-slot-profile
+fix/appointment-validation
+```
 
 ## GitHub Actions
 
@@ -303,4 +378,3 @@ This ensures Simplifier only sees changes after GitHub Pull Request review and v
 - Do not place source FSH under `fsh-generated/resources`.
 - Use Pull Requests before merging to `main`.
 - Run Firely validation before merge.
-

@@ -81,17 +81,13 @@ Validate generated JSON with Firely Terminal:
 .\scripts\validate-firely.ps1
 ```
 
-Generate the IG website:
-
-```powershell
-.\scripts\build-ig.ps1
-```
-
 Run the local CI sequence:
 
 ```powershell
 .\scripts\ci.ps1
 ```
+
+IG website generation is intentionally not part of the normal workflow right now. The current delivery flow is SUSHI JSON generation plus Firely validation, with Simplifier importing generated JSON from GitHub. The optional `scripts/build-ig.ps1` script is kept for later if local website generation is needed.
 
 ## Pull Request Flow
 
