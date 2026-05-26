@@ -27,6 +27,9 @@
           },
           {
             "code": "entered-in-error"
+          },
+          {
+            "code": "proposed"
           }
         ]
       }
