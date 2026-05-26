@@ -31,17 +31,20 @@ Use this structure:
 .
 |-- input/
 |   |-- fsh/
-|   |   |-- codesystems/
-|   |   |-- extensions/
-|   |   |-- instances/
-|   |   |-- invariants/
-|   |   |-- mappings/
-|   |   |-- profiles/
-|   |   |-- valuesets/
-|   |   `-- aliases.fsh
-|   `-- pagecontent/
+|   |   |-- codesystems/     # CodeSystem definitions
+|   |   |-- examples/        # Example instances
+|   |   |-- extensions/      # Extension definitions
+|   |   |-- instances/       # Supporting instances, e.g. NamingSystem
+|   |   |-- invariants/      # Reusable FHIRPath invariants
+|   |   |-- profiles/        # Profile StructureDefinitions
+|   |   |-- valuesets/       # ValueSet definitions
+|   |   `-- aliases.fsh      # Shared aliases
+|   `-- pagecontent/         # Markdown pages for the IG website
 |-- fsh-generated/
-|   `-- resources/
+|   |-- resources/           # Generated JSON committed for Simplifier
+|   |-- data/                # Generated support data, not committed
+|   |-- includes/            # Generated include files, not committed
+|   `-- fsh-index.txt        # Generated SUSHI index, not committed
 |-- scripts/
 |-- .github/
 |   `-- workflows/
@@ -100,10 +103,10 @@ Create folders:
 ```powershell
 New-Item -ItemType Directory -Force -Path `
   input/fsh/codesystems, `
+  input/fsh/examples, `
   input/fsh/extensions, `
   input/fsh/instances, `
   input/fsh/invariants, `
-  input/fsh/mappings, `
   input/fsh/profiles, `
   input/fsh/valuesets, `
   input/pagecontent, `
@@ -177,8 +180,8 @@ Put Node tooling dependencies in `package.json`:
 The FHIR package version is controlled in `sushi-config.yaml`:
 
 ```yaml
-version: 2.4.5-beta
-releaseLabel: 2.4.5-beta
+version: 2.4.6-beta
+releaseLabel: 2.4.6-beta
 ```
 
 When preparing a new Simplifier package, create a release branch and update the version before generating JSON:
@@ -186,7 +189,7 @@ When preparing a new Simplifier package, create a release branch and update the 
 ```powershell
 git checkout main
 git pull origin main
-git checkout -b release/2.4.5-beta
+git checkout -b release/2.4.6-beta
 ```
 
 Then update:
@@ -207,14 +210,14 @@ Commit and push:
 
 ```powershell
 git add sushi-config.yaml package-list.json fsh-generated/resources
-git commit -m "Prepare 2.4.5-beta package"
-git push -u origin release/2.4.5-beta
+git commit -m "Prepare 2.4.6-beta package"
+git push -u origin release/2.4.6-beta
 ```
 
 Open a Pull Request:
 
 ```text
-release/2.4.5-beta -> main
+release/2.4.6-beta -> main
 ```
 
 After review and successful validation, merge to `main` and let Simplifier import/publish from `main`.
