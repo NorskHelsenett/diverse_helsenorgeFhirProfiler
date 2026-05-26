@@ -1,7 +1,7 @@
 {
   "resourceType": "ImplementationGuide",
   "id": "no.nhn.fhir.helsenorge.profiles",
-  "url": "https://fhir.nhn.no/ig/helsenorge/profiles/ImplementationGuide/no.nhn.fhir.helsenorge.profiles",
+  "url": "http://helsenorge.no/fhir/ImplementationGuide/no.nhn.fhir.helsenorge.profiles",
   "version": "2.4.5-beta",
   "name": "HelsenorgeProfiles",
   "title": "Helsenorge FHIR Profiles",
@@ -421,6 +421,13 @@
         "name": "DNR og FNR fra Volven 8116",
         "description": "ValueSet basert på 8116 som inkluderer kun FNR og DNR",
         "exampleBoolean": false
+      },
+      {
+        "reference": {
+          "reference": "Slot/123e4567-e89b-12d3-a456-426614174000"
+        },
+        "name": "example-slot-1",
+        "exampleCanonical": "http://helsenorge.no/fhir/StructureDefinition/hn-basis-slot"
       },
       {
         "reference": {

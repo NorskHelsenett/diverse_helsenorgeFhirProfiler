@@ -2,7 +2,7 @@
 # FSH source files live under input/fsh.
 # Generated JSON is written by SUSHI to fsh-generated/resources and is committed.
 id: no.nhn.fhir.helsenorge.profiles
-canonical: https://fhir.nhn.no/ig/helsenorge/profiles
+canonical: http://helsenorge.no/fhir
 name: HelsenorgeProfiles
 title: Helsenorge FHIR Profiles
 description: FHIR R4 implementation guide for Helsenorge profiles, extensions, terminology, and examples.
