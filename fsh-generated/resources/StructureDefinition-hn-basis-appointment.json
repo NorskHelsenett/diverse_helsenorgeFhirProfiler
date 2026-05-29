@@ -557,7 +557,6 @@
           {
             "code": "Reference",
             "targetProfile": [
-              "http://helsenorge.no/fhir/StructureDefinition/kommunikasjonspart-Organization",
               "http://hl7.org/fhir/StructureDefinition/Organization"
             ]
           }
